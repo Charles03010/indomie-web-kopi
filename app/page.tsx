@@ -1,65 +1,133 @@
-import Image from "next/image";
+'use client';
+import useEmblaCarousel from 'embla-carousel-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import Link from 'next/dist/client/link';
+import Image from 'next/image';
+import { useCallback } from 'react';
+import RecomendCard from './components/recomendCard';
+import { link } from 'fs';
+
+const SAMPLE_CARDS = [
+  {
+    title: 'Anggap Aja ini Kafe',
+    description:
+      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
+    imageUrl: '/images/upload/Cafe1.png',
+    address: 'Sodong, Genting, Kec Jambu.......',
+    distance: '2.5 KM',
+    link: '/detail/1',
+  },
+  {
+    title: 'Anggap Aja ini Kafe',
+    description:
+    'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
+    imageUrl: '/images/upload/Cafe1.png',
+    address: 'Sodong, Genting, Kec Jambu.......',
+    distance: '2.5 KM',
+    link: '/detail/1',
+  },
+  {
+    title: 'Anggap Aja ini Kafe',
+    description:
+    'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
+    imageUrl: '/images/upload/Cafe1.png',
+    address: 'Sodong, Genting, Kec Jambu.......',
+    distance: '2.5 KM',
+    link: '/detail/1',
+  },
+];
 
 export default function Home() {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: 'center',
+  });
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev();
+  }, [emblaApi]);
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext();
+  }, [emblaApi]);
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      <section className="flex px-14 items-center justify-between relative">
+        <div className="w-1/2 relative z-1 ">
+          <h1 className="whitespace-pre mb-10 font-extrabold text-8xl text-(--head-text) ">
+            <span className=" ">
+              JELAJAHI{' '}
+              <span className="bg-clip-text bg-[url('/images/upload/effect.gif')] text-transparent">
+                DUNIA
+              </span>
+              MU
+            </span>
+            {`\nDALAM SECANGKIR\n`}
+            <span className="text-transparent bg-clip-text bg-[url('/images/upload/effect.gif')]">
+              KOPI
+            </span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="#search"
+            className="px-6 py-3 rounded-full bg-(--button-primary) text-(--primary-white)"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            mulai cari <span className="font-extrabold">kopimu</span>
+          </Link>
         </div>
-      </main>
-    </div>
+        <div className="relative w-1/2 aspect-3/2 my-32">
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-full aspect-3/2">
+            <Image src="/images/upload/hero.png" alt="Coffee Beans" fill />
+          </div>
+        </div>
+      </section>
+      <section className="px-14 h-screen flex flex-col items-center justify-between">
+        <div className="text-center text-(--head-text)">
+          <h2 className="text-6xl font-extrabold">
+            Bingung mau ngopi dimana ?
+          </h2>
+          <h3 className="whitespace-pre mt-4 text-3xl">{`nih, UMKMin rekomendasiin tempat ngopi \ndengan cita rasa yang otentik.`}</h3>
+        </div>
+        <div className="w-full relative flex items-center justify-center">
+          <button
+            onClick={scrollPrev}
+            className="absolute cursor-pointer left-0 z-1 p-3 rounded-full transition-all duration-200  bg-(--carousel-button-bg) text-(--primary-white)"
+            aria-label="Previous image"
+          >
+            <ArrowLeft strokeWidth={3} />
+          </button>
+          <div className="overflow-hidden w-full max-w-4/5" ref={emblaRef}>
+            <div className="flex">
+              {SAMPLE_CARDS.map((card, index) => (
+                <RecomendCard
+                  key={index}
+                  title={card.title}
+                  description={card.description}
+                  imageUrl={card.imageUrl}
+                  address={card.address}
+                  distance={card.distance}
+                  link={card.link}
+                />
+              ))}
+            </div>
+          </div>
+          <button
+            onClick={scrollNext}
+            className="absolute cursor-pointer right-0 z-1 p-3 rounded-full transition-all duration-200  bg-(--carousel-button-bg) text-(--primary-white)"
+            aria-label="Next image"
+          >
+            <ArrowRight strokeWidth={3} />
+          </button>
+        </div>
+        <div className="text-center space-y-6">
+          <h4 className="text-(--head-text)">masih belum nemu ?</h4>
+          <Link
+            href="#search"
+            className="text-(--button-secondary) font-extrabold"
+          >
+            lihat semua yuk
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
