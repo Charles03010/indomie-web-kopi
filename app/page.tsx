@@ -1,11 +1,10 @@
 'use client';
 import useEmblaCarousel from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
-import Link from 'next/dist/client/link';
+import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { useCallback } from 'react';
 import RecomendCard from './components/recomendCard';
-import { link } from 'fs';
 
 const SAMPLE_CARDS = [
   {
@@ -20,7 +19,7 @@ const SAMPLE_CARDS = [
   {
     title: 'Anggap Aja ini Kafe',
     description:
-    'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
+      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
     imageUrl: '/images/upload/Cafe1.png',
     address: 'Sodong, Genting, Kec Jambu.......',
     distance: '2.5 KM',
@@ -29,7 +28,7 @@ const SAMPLE_CARDS = [
   {
     title: 'Anggap Aja ini Kafe',
     description:
-    'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
+      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
     imageUrl: '/images/upload/Cafe1.png',
     address: 'Sodong, Genting, Kec Jambu.......',
     distance: '2.5 KM',
@@ -54,7 +53,7 @@ export default function Home() {
     <>
       <section className="flex px-14 items-center justify-between relative">
         <div className="w-1/2 relative z-1 ">
-          <h1 className="whitespace-pre mb-10 font-extrabold text-8xl text-(--head-text) ">
+          <h1 className="whitespace-pre leading-28 mb-10 font-extrabold text-8xl text-(--head-text) ">
             <span className=" ">
               JELAJAHI{' '}
               <span className="bg-clip-text bg-[url('/images/upload/effect.gif')] text-transparent">
@@ -80,14 +79,14 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="px-14 h-screen flex flex-col items-center justify-between">
+      <section className="px-14 py-16 flex flex-col items-center justify-between">
         <div className="text-center text-(--head-text)">
           <h2 className="text-6xl font-extrabold">
             Bingung mau ngopi dimana ?
           </h2>
-          <h3 className="whitespace-pre mt-4 text-3xl">{`nih, UMKMin rekomendasiin tempat ngopi \ndengan cita rasa yang otentik.`}</h3>
+          <h3 className="whitespace-pre mt-4 text-3xl font-light">{`nih, UMKMin rekomendasiin tempat ngopi \ndengan cita rasa yang otentik.`}</h3>
         </div>
-        <div className="w-full relative flex items-center justify-center">
+        <div className="w-full relative my-16 flex items-center justify-center">
           <button
             onClick={scrollPrev}
             className="absolute cursor-pointer left-0 z-1 p-3 rounded-full transition-all duration-200  bg-(--carousel-button-bg) text-(--primary-white)"
@@ -126,6 +125,66 @@ export default function Home() {
           >
             lihat semua yuk
           </Link>
+        </div>
+      </section>
+      <section className="py-20">
+        <div className="text-center text-(--head-text)">
+          <h2 className="text-6xl font-extrabold">
+            Udah tau mau ngopi dimana ?
+          </h2>
+          <h3 className="mt-4 text-3xl font-light">
+            gas, langsung cari lokasi favorit kamu.
+          </h3>
+        </div>
+        <form
+          action=""
+          className="w-3/4 my-10 py-4 mx-auto rounded-full flex items-center justify-between px-8 bg-linear-to-r to-[#1C2022] from-[#352B1B]"
+        >
+          <input
+            className="w-full outline-none border-none text-(--primary-white) font-light"
+            placeholder="enaknya ngopi dimana ya?"
+            type="text"
+          />
+          <button type="submit" className="text-(--primary-white) mx-4">
+            <Search strokeWidth={1} />
+          </button>
+        </form>
+      </section>
+      <section>
+        <div className="text-center text-(--head-text)">
+          <h2 className="text-6xl font-extrabold">
+            Mau jadi bagian dari UMKMin ?
+          </h2>
+          <h3 className="mt-4 text-3xl font-light">
+            Mulai menjadi cita rasa kopi terbaik bareng UMKMin.
+          </h3>
+        </div>
+        <div className="flex px-14 items-center justify-between relative">
+          <div className="relative w-1/2 aspect-square my-5">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full aspect-square">
+              <Image src="/images/upload/coffee.png" alt="Coffee Beans" fill />
+            </div>
+          </div>
+          <div className="w-3/4 absolute z-1 right-20 top-1/2 -translate-y-1/2">
+            <h2 className="mb-10 leading-28 font-extrabold text-7xl text-(--head-text) text-right">
+              <span className=" ">
+                SUDAH{' '}
+                <span className="bg-clip-text bg-[url('/images/upload/effect.gif')] text-transparent">
+                  19 JUTA
+                </span>
+              </span>
+              <br />
+              UMKM YANG BERGABUNG
+              <br />
+              BERSAMA UMKMin
+            </h2>
+            <Link
+              href="#search"
+              className="px-6 py-3 absolute right-0 rounded-full bg-(--button-primary) text-(--primary-white)"
+            >
+              daftar <span className="font-extrabold">UMKMin</span> sekarang
+            </Link>
+          </div>
         </div>
       </section>
     </>
