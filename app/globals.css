@@ -1,15 +1,52 @@
 @import 'tailwindcss';
 
 :root {
+  --primary-bg: #faf7f5;
   --primary-white: #f4f7fd;
-  --secondary-text: #B77B5A;
+  --secondary-text: #b77b5a;
   --head-text: #473e39;
-  --button-primary: #1B0400;
-  --button-secondary: #E89955;
-  --carousel-button-bg: #DD7338;
-  --divider-primary: #D9D9D9;
+  --button-primary: #1b0400;
+  --button-secondary: #e89955;
+  --carousel-button-bg: #dd7338;
+  --divider-primary: #d9d9d9;
+  --input-bg: #dedede;
 }
 
 body {
   font-family: Poppins, sans-serif;
+}
+
+input[type='radio'] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+input[type='radio']:checked ~ .checkmark {
+  background: var(--head-text);
+}
+.checkmark {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 1.5em;
+  width: 1.5em;
+  background-color: var(--input-bg);
+  border-radius: 50%;
+}
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+input[type='radio']:checked ~ .checkmark:after {
+  display: block;
+}
+.checkmark:after {
+ 	top: 50%;
+	left: 50%;
+	width: 1em;
+	height: 1em;
+	border-radius: 50%;
+	background: var(--button-secondary);
+	transform: translate(-50%, -50%);
 }
