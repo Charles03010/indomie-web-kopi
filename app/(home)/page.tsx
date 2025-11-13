@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCallback } from 'react';
-import RecomendCard from '../components/recomendCard';
+import RecomendCard from '../components/card/recomendCard';
 
 const SAMPLE_CARDS = [
   {
