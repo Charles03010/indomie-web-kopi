@@ -50,15 +50,17 @@ export default function Foto({
           <div className="overflow-hidden w-full max-w-6xl" ref={emblaRef}>
             <div className="flex pl-4 md:pl-6 lg:pl-8">
               {data.map((card, index) => (
-                <div className="relative overflow-hidden w-1/3 mx-5 aspect-video">
-                <Image
+                <div
                   key={index}
-                  src={card.imageUrl}
-                  alt={card.alt}
-                  fill
-                  className="rounded-xl shadow-xl object-cover"
+                  className="relative overflow-hidden w-1/3 mx-5 aspect-video"
+                >
+                  <Image
+                    src={card.imageUrl}
+                    alt={card.alt}
+                    fill
+                    className="rounded-xl shadow-xl object-cover"
                   />
-                  </div>
+                </div>
               ))}
             </div>
           </div>

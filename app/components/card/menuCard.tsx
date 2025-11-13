@@ -32,8 +32,8 @@ export default function MenuCard({
               {description}
             </p>
             <div className="flex items-center space-x-2 my-2">
-              {Array.from({ length: rating }, () => (
-                <Star fill="#FFE311" strokeWidth={0} />
+              {Array.from({ length: rating }, (_, index) => (
+                <Star key={index} fill="#FFE311" strokeWidth={0} />
               ))}
             </div>
             <span className="text-(--secondary-text) text-sm">
