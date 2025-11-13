@@ -35,8 +35,7 @@ const Navbar = () => {
       rounded-full flex items-center justify-between 
       px-4 py-2 md:px-8 md:py-3 
       bg-linear-to-r to-[#1C2022] from-[#352B1B] 
-      shadow-xl 
-      relative 
+      shadow-xl  
     ">
       <Image src="/images/logo.png" className='ml-2 md:ml-4' alt="Logo" width={40} height={40} />
       

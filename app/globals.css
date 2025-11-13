@@ -10,6 +10,10 @@
   --carousel-button-bg: #dd7338;
   --divider-primary: #d9d9d9;
   --input-bg: #dedede;
+  --dashboard-bg: #1E1F21;
+  --dashboard-border: #676767;
+  --dashboard-card-bg: #313338;
+  --dashboard-text: #FFFFFF;
 }
 
 body {
