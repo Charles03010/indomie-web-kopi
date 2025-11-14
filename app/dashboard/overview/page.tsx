@@ -9,7 +9,7 @@ const dummyTips = [
     title: 'Undang Pengguna',
     content:
       'Mulai undang pengguna menggunakan tautan untuk datang ke UMKM anda.',
-    link: '/overview',
+    link: '/dashboard/overview',
     linkText: 'Copy Link',
     icons: <ExternalLink />,
   },
@@ -17,7 +17,7 @@ const dummyTips = [
     title: 'Kepuasan Pelanggan',
     content:
       'Langkah langkah meningkatkan kepuasan pelanggan agar masuk dalam rekomendasi',
-    link: '/overview',
+    link: '/dashboard/overview',
     linkText: 'Pelajari  Selengkapnya',
     icons: <ExternalLink />,
   },

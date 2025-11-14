@@ -4,10 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const SidebarLink = [
-  { name: 'Overview', href: '/overview' },
-  { name: 'Configurations', href: '/configurations' },
-  { name: 'Advertisement', href: '/advertisement' },
-  { name: 'Settings', href: '/settings' },
+  { name: 'Overview', href: '/dashboard/overview' },
+  { name: 'Configurations', href: '/dashboard/configurations' },
+  { name: 'Advertisement', href: '/dashboard/advertisement' },
+  { name: 'Settings', href: '/dashboard/settings' },
   { name: 'Logout', href: '/logout' },
 ];
 

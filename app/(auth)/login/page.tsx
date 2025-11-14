@@ -51,7 +51,6 @@ export default function Login() {
         formData.password
       );
       const token = await cred.user.getIdToken();
-      console.log(token);
 
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -64,7 +63,7 @@ export default function Login() {
         throw new Error(data?.message || "Failed to create session");
       }
 
-      router.push('/overview');
+      router.push('/dashboard/overview');
     } catch (err: any) {
       console.error('Error signing in:', err.code, err.message);
 
