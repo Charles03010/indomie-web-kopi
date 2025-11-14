@@ -1,12 +1,24 @@
 'use client'; 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react'; 
-import { useState } from 'react'; 
+import { Menu, X, User as UserIcon } from 'lucide-react'; 
+import { useState, useEffect } from 'react'; 
+import { onAuthStateChanged, User } from 'firebase/auth';
+import { auth } from '@/lib/firebase/client';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false); 
+  const [user, setUser] = useState<User | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
   const toggleMenu = () => { 
     setIsOpen(!isOpen);
   };
@@ -51,22 +63,52 @@ const Navbar = () => {
         </Link>
       </nav>
       
-      <Link 
-        href="/login" 
-        className="
-          text-(--primary-white) 
-          hidden md:block 
-          mx-4 
-          px-4 py-2 
-          border border-(--primary-white) 
-          rounded-full 
-          hover:bg-white hover:text-black 
-          transition-colors 
-        "
-      >
-        Login
-      </Link>
-      
+      <div className="hidden md:flex items-center relative">
+        {user ? (
+          <div className="relative">
+            <button
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+              className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-500 transition-colors"
+            >
+              <UserIcon />              {user.photoURL ? (
+                <img
+                  src={user.photoURL}
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <UserIcon />
+              )}
+
+            </button>
+            {isProfileOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                <Link href="/dashboard/overview" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Dashboard
+                </Link>
+                <Link href="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Logout
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
+          <Link 
+            href="/login" 
+            className="
+              text-(--primary-white) 
+              mx-4 
+              px-4 py-2 
+              border border-(--primary-white) 
+              rounded-full 
+              hover:bg-white hover:text-black 
+              transition-colors 
+            "
+          >
+            Login
+          </Link>
+        )}
+      </div>
       <button 
         className="md:hidden text-(--primary-white) p-2 z-30" 
         onClick={toggleMenu} 
@@ -104,21 +146,32 @@ const Navbar = () => {
         
         <hr className="border-gray-500 opacity-50" />
         
-        <Link 
-          href="/login" 
-          className="
-            text-(--button-secondary) 
-            font-bold 
-            px-4 py-2 
-            border border-(--button-secondary) 
-            rounded-full 
-            hover:bg-(--button-secondary) hover:text-white 
-            transition-colors 
-          "
-          onClick={() => setIsOpen(false)}
-        >
-          Login
-        </Link>
+        {user ? (
+          <>
+            <Link href="/dashboard/overview" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+              Dashboard
+            </Link>
+            <Link href="/logout" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+              Logout
+            </Link>
+          </>
+        ) : (
+          <Link 
+            href="/login" 
+            className="
+              text-(--button-secondary) 
+              font-bold 
+              px-4 py-2 
+              border border-(--button-secondary) 
+              rounded-full 
+              hover:bg-(--button-secondary) hover:text-white 
+              transition-colors 
+            "
+            onClick={() => setIsOpen(false)}
+          >
+            Login
+          </Link>
+        )}
       </nav>
     </header>
   );
