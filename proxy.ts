@@ -4,7 +4,7 @@ export function proxy(req: NextRequest) {
   const url = req.nextUrl.clone();
   const sessionCookie = req.cookies.get('session')?.value;
 
-  const protectedPaths = ['/dashboard'];
+  const protectedPaths = ['/dashboard','/settings'];
   const isProtected = protectedPaths.some((path) =>
     url.pathname === path || url.pathname.startsWith(`${path}/`)
   );
@@ -22,5 +22,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*'], 
+  matcher: ['/dashboard/:path*', '/settings/:path*'], 
 };

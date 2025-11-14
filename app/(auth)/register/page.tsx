@@ -100,6 +100,7 @@ export default function Register() {
       if (profilePicture && profilePicture.size > 0) {
         const uploadForm = new FormData();
         uploadForm.set('file', profilePicture);
+        uploadForm.set('folder', 'umkmin/profile_pictures');
 
         const uploadRes = await fetch('/api/upload-profile', {
           method: 'POST',

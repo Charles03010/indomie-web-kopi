@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
+    const folderFile = formData.get('folder') as string | null;
 
     if (!file) {
       return NextResponse.json(
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest) {
       (resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            folder: process.env.CLOUDINARY_UPLOAD_FOLDER || 'profile_pictures',
+            folder: folderFile || process.env.CLOUDINARY_UPLOAD_FOLDER,
           },
           (error, result) => {
             if (error || !result) {

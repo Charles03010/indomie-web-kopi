@@ -114,7 +114,7 @@ export const Input = ({
   );
 };
 
-export const InputProfile = ({ name, url }: { name: string; url: string }) => {
+export const InputProfile = ({ name, url, onChange }: { name: string; url: string; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }) => {
   const [preview, setPreview] = useState<string | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,12 +137,15 @@ export const InputProfile = ({ name, url }: { name: string; url: string }) => {
                    group"
     >
       <input
-        onChange={handleFileChange}
         accept="image/*"
         type="file"
         id={name}
         name={name}
         className="hidden"
+        onChange={(e) => {
+          handleFileChange(e);
+          if (onChange) onChange(e);
+        }}
       />
       {preview || url ? (
         <img
