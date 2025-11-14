@@ -14,7 +14,7 @@ const SidebarLink = [
 const Sidebar = () => {
   const pathname = usePathname();
   return (
-    <aside className="w-90 border-r px-5 py-10 min-h-screen border-(--dashboard-border)">
+    <aside className="w-90 sticky top-0 border-r px-5 py-10 max-h-screen border-(--dashboard-border)">
       <div className="flex items-center justify-start">
         <Image
           src="/images/logo.png"

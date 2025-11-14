@@ -9,6 +9,8 @@ export const Input = ({
   label,
   showPassword,
   setShowPassword,
+  value,
+  onChange,
 }: {
   type: string;
   placeholder: string;
@@ -16,6 +18,8 @@ export const Input = ({
   label: string;
   showPassword?: boolean;
   setShowPassword?: (value: boolean) => void;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const [internalShowPassword, setInternalShowPassword] = useState(false);
   const passwordVisible = showPassword ?? internalShowPassword;
@@ -51,6 +55,8 @@ export const Input = ({
             autoComplete={name}
             className="w-full p-4 outline-0"
             placeholder={placeholder}
+            value={value}
+            onChange={onChange}
           />
           {(name === 'password' || name === 'confirmPassword') &&
             passwordVisible === false && (

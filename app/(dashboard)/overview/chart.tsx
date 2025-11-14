@@ -130,10 +130,13 @@ export default function CardLineChart() {
     };
     const canvas = document.getElementById('line-chart') as HTMLCanvasElement;
     if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        window.myLine = new Chart(ctx, config as any);
-      }
+      const ctx = canvas.getContext('2d')!;
+      const newChart = new Chart(ctx, config as any);
+      window.myLine = newChart;
+
+      return () => {
+        newChart.destroy();
+      };
     }
   }, []);
   return (
