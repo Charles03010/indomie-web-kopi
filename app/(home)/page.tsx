@@ -80,7 +80,7 @@ export default function Home() {
               font-extrabold 
               text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl 
               leading-tight sm:leading-snug lg:leading-[1.1] 
-              mb-6 lg:mb-10 
+              mb-6 lg:mb-10 xl:w-max
               text-(--head-text) 
             "
             >
@@ -128,7 +128,7 @@ export default function Home() {
         className="px-4 md:px-10 lg:px-14 py-12 md:py-16 flex flex-col items-center justify-between"
       >
         <div className="text-center text-(--head-text) max-w-4xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold xl:w-max">
             Bingung mau ngopi dimana ?
           </h2>
           <h3 className="mt-3 md:mt-4 text-lg sm:text-xl lg:text-3xl font-light whitespace-pre-line">
@@ -203,7 +203,7 @@ export default function Home() {
 
       <section id="search" className="py-16 md:py-20 px-4 md:px-10 lg:px-14">
         <div className="text-center text-(--head-text) max-w-4xl mx-auto">
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold">
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold xl:w-max">
             Udah tau mau ngopi dimana ?
           </h2>
           <h3 className="mt-3 md:mt-4 text-lg sm:text-xl lg:text-3xl font-light">
