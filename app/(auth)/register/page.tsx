@@ -3,7 +3,17 @@ import { Button } from '@/app/components/button';
 import { Input } from '@/app/components/input';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { auth, db } from '@/lib/firebase/client';
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  deleteUser,
+} from 'firebase/auth';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { OctagonAlert } from 'lucide-react';
 
 const inputData = [
   {
@@ -40,6 +50,132 @@ const inputData = [
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrorMsg(null);
+    setLoading(true);
+
+    let uploadedPublicId: string | null = null;
+
+    try {
+      const formData = new FormData(e.currentTarget);
+
+      const username = (formData.get('username') || '').toString().trim();
+      const email = (formData.get('email') || '').toString().trim();
+      const password = (formData.get('password') || '').toString();
+      const confirmPassword = (
+        formData.get('confirmPassword') || ''
+      ).toString();
+      const agree = formData.get('agree');
+      const profilePicture = formData.get('profilePicture') as File | null;
+
+      // Validasi dasar
+      if (!username || !email || !password || !confirmPassword) {
+        setErrorMsg('Semua field wajib diisi.');
+        setLoading(false);
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        setErrorMsg('Password dan konfirmasi password tidak sama.');
+        setLoading(false);
+        return;
+      }
+
+      if (!agree) {
+        setErrorMsg(
+          'Anda harus menyetujui Terms of Service dan Privacy Policy.'
+        );
+        setLoading(false);
+        return;
+      }
+
+      // 1. Upload ke Cloudinary (jika ada file)
+      let photoURL: string | null = null;
+
+      if (profilePicture && profilePicture.size > 0) {
+        const uploadForm = new FormData();
+        uploadForm.set('file', profilePicture);
+
+        const uploadRes = await fetch('/api/upload-profile', {
+          method: 'POST',
+          body: uploadForm,
+        });
+
+        if (!uploadRes.ok) {
+          throw new Error('Gagal upload foto ke Cloudinary');
+        }
+
+        const uploadData = await uploadRes.json();
+        photoURL = uploadData.url as string;
+        uploadedPublicId = uploadData.public_id as string;
+      }
+
+      // 2. Buat user Firebase Auth
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      // 3. Update profile Firebase Auth
+      if (auth.currentUser) {
+        await updateProfile(auth.currentUser, {
+          displayName: username,
+          photoURL: photoURL || undefined,
+        });
+
+        // 4. Simpan ke Firestore
+        const userRef = doc(db, 'users', auth.currentUser.uid);
+        await setDoc(userRef, {
+          uid: auth.currentUser.uid,
+          username,
+          email,
+          photoURL: photoURL || null,
+          createdAt: serverTimestamp(),
+        });
+      }
+
+      // 5. Redirect ke login
+      router.push('/login');
+    } catch (error: any) {
+      console.error(error);
+      try {
+        // a. rollback user Firebase jika sudah terbuat tapi ada error setelahnya
+        if (auth.currentUser) {
+          await deleteUser(auth.currentUser);
+        }
+
+        // b. rollback gambar di Cloudinary jika sudah terupload
+        if (uploadedPublicId) {
+          await fetch('/api/delete-profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ publicId: uploadedPublicId }),
+          });
+        }
+      } catch (rollbackErr) {
+        console.error('[Register] Rollback error:', rollbackErr);
+      }
+      let msg = 'Terjadi kesalahan saat registrasi.';
+
+      if (error?.code === 'auth/email-already-in-use') {
+        msg = 'Email sudah digunakan.';
+      } else if (error?.code === 'auth/weak-password') {
+        msg = 'Password terlalu lemah (minimal 6 karakter).';
+      }
+
+      if (error?.message?.includes('Cloudinary')) {
+        msg = 'Gagal upload foto. Coba lagi atau gunakan foto lain.';
+      }
+
+      setErrorMsg(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <div className="flex justify-center py-10 items-center max-w-dvw min-h-dvh">
@@ -56,7 +192,13 @@ export default function Register() {
               loading="eager"
             />
           </div>
-          <form action="" className="space-y-5 mt-10">
+          <form onSubmit={handleSubmit} className="space-y-5 mt-10">
+            {errorMsg && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <OctagonAlert className="inline-block mr-2" />
+                {errorMsg}
+              </div>
+            )}
             {inputData.map((input, index) => (
               <Input
                 key={index}
