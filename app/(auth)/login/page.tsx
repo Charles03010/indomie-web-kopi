@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/lib/firebase/client';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { OctagonAlert } from 'lucide-react';
+import { ChevronLeft, OctagonAlert } from 'lucide-react';
 
 const inputData = [
   {
@@ -52,15 +52,15 @@ export default function Login() {
       );
       const token = await cred.user.getIdToken();
 
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || "Failed to create session");
+        throw new Error(data?.message || 'Failed to create session');
       }
 
       router.push('/dashboard/overview');
@@ -80,6 +80,13 @@ export default function Login() {
   };
   return (
     <>
+      <Link
+        href="/"
+        className="text-(--head-text) absolute flex items-center justify-start m-10"
+      >
+        <ChevronLeft />
+        Kembali ke Homepage
+      </Link>
       <div className="flex justify-center items-center w-dvw h-dvh">
         <div className="w-1/4">
           <div className="flex items-start justify-center">

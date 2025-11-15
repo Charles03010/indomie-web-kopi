@@ -14,7 +14,7 @@ import {
   User,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { OctagonAlert } from 'lucide-react';
+import { ChevronLeft, OctagonAlert } from 'lucide-react';
 
 const inputData = [
   {
@@ -186,6 +186,13 @@ export default function Register() {
   };
   return (
     <>
+      <Link
+        href="/"
+        className="text-(--head-text) absolute flex items-center justify-start m-10"
+      >
+        <ChevronLeft />
+        Kembali ke Homepage
+      </Link>
       <div className="flex justify-center py-10 items-center max-w-dvw min-h-dvh">
         <div className="w-1/4">
           <div className="flex items-start justify-center">
