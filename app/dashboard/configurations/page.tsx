@@ -141,7 +141,7 @@ export default function Configurations() {
                   key={item.id}
                   src={item.imageUrl}
                   alt={item.nama || 'Tanpa Judul'}
-                  className="rounded-xl"
+                  className="rounded-xl object-cover"
                   fill
                 />
               </Link>
