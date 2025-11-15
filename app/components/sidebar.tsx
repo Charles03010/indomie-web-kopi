@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { redirect, usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase/client';
@@ -22,6 +22,7 @@ const SidebarLink = [
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     namaUMKM: '',
     cafeImage: '',
@@ -39,7 +40,7 @@ const Sidebar = () => {
 
         if (snapshot.empty) {
           if (pathname !== '/dashboard/settings'){
-            redirect('/dashboard/settings');
+            router.push('/dashboard/settings');
           }
         } else {
           const doc = snapshot.docs[0];

@@ -39,7 +39,6 @@ export default function Overview() {
     cafeImage: '',
     updatedAt: null as Timestamp | null,
   });
-  console.log(formData);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
