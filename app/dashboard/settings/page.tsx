@@ -16,6 +16,7 @@ import {
   addDoc,
   doc,
   updateDoc,
+  deleteDoc,
   serverTimestamp,
 } from 'firebase/firestore';
 import { extractPublicIdFromUrl } from '@/lib/cloudinary/public_id';
@@ -211,6 +212,66 @@ export default function Configurations() {
       }, 500);
     };
 
+  const handleDeleteUMKM = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    const inputHapus = (document.getElementById('hapus') as HTMLInputElement)
+      .value;
+
+    // cek apakah nama sama
+    if (inputHapus.trim() !== formData.namaUMKM.trim()) {
+      alert('Nama UMKM tidak sesuai. Penghapusan dibatalkan.');
+      return;
+    }
+
+    try {
+      setSaving(true);
+
+      // --- HAPUS FOTO DI CLOUDINARY ---
+      if (formData.cafeImage) {
+        const publicId = extractPublicIdFromUrl(formData.cafeImage);
+        if (publicId) {
+          await fetch('/api/delete-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ publicId }),
+          });
+        }
+      }
+
+      // --- HAPUS DATA UMKM ---
+      if (umkmDocId) {
+        await deleteDoc(doc(db, 'umkm', umkmDocId));
+      }
+
+      // --- HAPUS DATA USER (COLLECTION users / umkmUser / dsb) ---
+      // Sesuaikan nama collection-nya (misal: "users")
+      await deleteDoc(doc(db, 'users', currentUser.uid));
+
+      alert('UMKM dan akun Anda berhasil dihapus.');
+      try {
+        await currentUser.delete();
+      } catch (authErr: any) {
+        // Jika token expired, harus re-authenticate dulu
+        if (authErr.code === 'auth/requires-recent-login') {
+          alert('Anda harus login ulang sebelum menghapus akun.');
+          return;
+        }
+        throw authErr;
+      }
+
+      // --- LOGOUT USER ---
+      await auth.signOut();
+      window.location.href = '/';
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus data.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   return (
     <>
@@ -230,7 +291,10 @@ export default function Configurations() {
         />
       </section>
       <section className="pb-10">
-        <form className="space-y-5 w-1/2 mt-10 text-(--dashboard-text)">
+        <form
+          onSubmit={handleDeleteUMKM}
+          className="space-y-5 w-1/2 mt-10 text-(--dashboard-text)"
+        >
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
               <OctagonAlert className="inline-block mr-2" />
