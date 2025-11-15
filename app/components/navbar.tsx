@@ -68,7 +68,7 @@ const Navbar = () => {
           <div className="relative">
             <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
-              className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-500 transition-colors"
+              className="w-10 h-10 cursor-pointer rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-500 transition-colors"
             >
               <UserIcon />              {user.photoURL ? (
                 <img
@@ -85,6 +85,9 @@ const Navbar = () => {
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
                 <Link href="/dashboard/overview" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Dashboard
+                </Link>
+                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                  Profile Settings
                 </Link>
                 <Link href="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                   Logout
@@ -150,6 +153,9 @@ const Navbar = () => {
           <>
             <Link href="/dashboard/overview" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
               Dashboard
+            </Link>
+            <Link href="/settings" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+              Profile Settings
             </Link>
             <Link href="/logout" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
               Logout
