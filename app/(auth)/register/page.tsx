@@ -11,6 +11,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   deleteUser,
+  User,
 } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { OctagonAlert } from 'lucide-react';
@@ -60,6 +61,7 @@ export default function Register() {
     setLoading(true);
 
     let uploadedPublicId: string | null = null;
+    let createdUser: User | null = null;
 
     try {
       const formData = new FormData(e.currentTarget);
@@ -117,19 +119,24 @@ export default function Register() {
       }
 
       // 2. Buat user Firebase Auth
-      await createUserWithEmailAndPassword(auth, email, password);
-
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      createdUser = user;
       // 3. Update profile Firebase Auth
-      if (auth.currentUser) {
-        await updateProfile(auth.currentUser, {
+      if (user) {
+        await updateProfile(user, {
           displayName: username,
           photoURL: photoURL || undefined,
         });
 
         // 4. Simpan ke Firestore
-        const userRef = doc(db, 'users', auth.currentUser.uid);
+        const userRef = doc(db, 'users', user.uid);
         await setDoc(userRef, {
-          uid: auth.currentUser.uid,
+          uid: user.uid,
           username,
           email,
           photoURL: photoURL || null,
@@ -143,8 +150,8 @@ export default function Register() {
       console.error(error);
       try {
         // a. rollback user Firebase jika sudah terbuat tapi ada error setelahnya
-        if (auth.currentUser) {
-          await deleteUser(auth.currentUser);
+        if (createdUser) {
+          await deleteUser(createdUser);
         }
 
         // b. rollback gambar di Cloudinary jika sudah terupload
