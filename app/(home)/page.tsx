@@ -3,38 +3,27 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import RecomendCard from '../components/card/recomendCard';
 
-const SAMPLE_CARDS = [
-  {
-    title: 'Anggap Aja ini Kafe',
-    description:
-      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
-    imageUrl: '/images/upload/Cafe1.png',
-    address: 'Sodong, Genting, Kec Jambu.......',
-    distance: '2.5 KM',
-    link: '/detail/1',
-  },
-  {
-    title: 'Anggap Aja ini Kafe',
-    description:
-      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
-    imageUrl: '/images/upload/Cafe1.png',
-    address: 'Sodong, Genting, Kec Jambu.......',
-    distance: '2.5 KM',
-    link: '/detail/1',
-  },
-  {
-    title: 'Anggap Aja ini Kafe',
-    description:
-      'ini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopiini kopi',
-    imageUrl: '/images/upload/Cafe1.png',
-    address: 'Sodong, Genting, Kec Jambu.......',
-    distance: '2.5 KM',
-    link: '/detail/1',
-  },
-];
+import { db } from '@/lib/firebase/client';
+import {
+  collection,
+  getDocs,
+  query,
+  DocumentData,
+} from 'firebase/firestore';
+
+interface RecomendCardProps {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  address: string;
+  distance: string;
+  link: string;
+}
+
 
 export default function Home() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -43,6 +32,11 @@ export default function Home() {
     dragFree: true,
   });
 
+  const [recommendations, setRecommendations] = useState<RecomendCardProps[]>(
+    []
+  );
+  const [loading, setLoading] = useState(true);
+
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -50,6 +44,36 @@ export default function Home() {
   const scrollNext = useCallback(() => {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
+
+  useEffect(() => {
+    const fetchUmkmData = async () => {
+      try {
+        const q = query(collection(db, 'umkm'));
+        const snapshot = await getDocs(q);
+
+        const fetchedCards: RecomendCardProps[] = snapshot.docs.map((doc) => {
+          const data = doc.data() as DocumentData;
+          return {
+            id: doc.id,
+            title: data.nama || 'Nama Kafe',
+            description: data.deskripsi || 'Deskripsi tidak tersedia.',
+            imageUrl: data.imageUrl || 'https://placehold.co/300x200/png', // Fallback image
+            address: data.alamat || 'Alamat tidak diisi', // Assuming an 'alamat' field
+            distance: data.distance || 'N/A', // Assuming a 'distance' field
+            link: `/cafe/${doc.id}`, // Use the document ID for the link
+          };
+        });
+
+        setRecommendations(fetchedCards);
+      } catch (error) {
+        console.error('Error fetching recommendations: ', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUmkmData();
+  }, []);
 
   return (
     <>
@@ -154,18 +178,29 @@ export default function Home() {
           </button>
 
           <div className="overflow-hidden w-full max-w-6xl" ref={emblaRef}>
+            {/* Update this section to map over the new state */}
             <div className="flex pl-4 md:pl-6 lg:pl-8">
-              {SAMPLE_CARDS.map((card, index) => (
-                <RecomendCard
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  imageUrl={card.imageUrl}
-                  address={card.address}
-                  distance={card.distance}
-                  link={card.link}
-                />
-              ))}
+              {loading ? (
+                <div className="flex-[0_0_100%] min-w-0 text-center text-(--head-text)">
+                  Loading recommendations...
+                </div>
+              ) : recommendations.length === 0 ? (
+                <div className="flex-[0_0_100%] min-w-0 text-center text-(--head-text)">
+                  No recommendations found.
+                </div>
+              ) : (
+                recommendations.map((card) => (
+                  <RecomendCard
+                    key={card.id} // Use the document ID as the key
+                    title={card.title}
+                    description={card.description}
+                    imageUrl={card.imageUrl}
+                    address={card.address}
+                    distance={card.distance}
+                    link={card.link}
+                  />
+                ))
+              )}
             </div>
           </div>
 
