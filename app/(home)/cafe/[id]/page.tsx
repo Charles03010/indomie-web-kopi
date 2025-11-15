@@ -3,7 +3,7 @@ import Menu from './menu';
 import Foto from './foto';
 import Ulasan from './ulasan';
 
-export default async function Cafe({ params }: { params: { id: string } }) {
+export default async function Cafe({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const dataCafe = {
     name: 'Cafe A',
