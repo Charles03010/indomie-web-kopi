@@ -196,7 +196,7 @@ export default function Settings() {
         uploadForm.set('file', form.profilePicture);
         uploadForm.set('folder', 'umkmin/profile_pictures');
 
-        const uploadRes = await fetch('/api/upload-profile', {
+        const uploadRes = await fetch('/api/upload-photo', {
           method: 'POST',
           body: uploadForm,
         });
@@ -210,7 +210,7 @@ export default function Settings() {
         uploadedPublicId = uploadData.public_id as string;
         if (oldPhotoPublicId) {
           try {
-            await fetch('/api/delete-profile', {
+            await fetch('/api/delete-photo', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ publicId: oldPhotoPublicId }),

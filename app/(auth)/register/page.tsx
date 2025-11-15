@@ -104,7 +104,7 @@ export default function Register() {
         uploadForm.set('file', profilePicture);
         uploadForm.set('folder', 'umkmin/profile_pictures');
 
-        const uploadRes = await fetch('/api/upload-profile', {
+        const uploadRes = await fetch('/api/upload-photo', {
           method: 'POST',
           body: uploadForm,
         });
@@ -156,7 +156,7 @@ export default function Register() {
 
         // b. rollback gambar di Cloudinary jika sudah terupload
         if (uploadedPublicId) {
-          await fetch('/api/delete-profile', {
+          await fetch('/api/delete-photo', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

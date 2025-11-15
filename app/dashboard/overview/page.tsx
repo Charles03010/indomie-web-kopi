@@ -1,8 +1,19 @@
+"use client";
 import { ChevronLeft, ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import { Timestamp } from 'firebase/firestore';
 import Link from 'next/link';
 import CardLineChart from './chart';
+import { redirect } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth, db } from '@/lib/firebase/client';
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore';
 
 const dummyTips = [
   {
@@ -23,6 +34,42 @@ const dummyTips = [
   },
 ];
 export default function Overview() {
+  const [formData, setFormData] = useState({
+    namaUMKM: '',
+    cafeImage: '',
+    updatedAt: null as Timestamp | null,
+  });
+  console.log(formData);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      
+      try {
+        const q = query(
+          collection(db, 'umkm'),
+          where('idpemilik', '==', user!.uid)
+        );
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          return ;
+        } else {
+          const doc = snapshot.docs[0];
+          const data = doc.data() as any;
+
+          setFormData({
+            namaUMKM: data.nama || '',
+            cafeImage: data.imageUrl || '',
+            updatedAt: data.updatedAt || null,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    return () => unsub();
+  }, []);
   return (
     <>
       <Link
@@ -35,7 +82,7 @@ export default function Overview() {
       <section>
         <div className="flex items-start justify-start my-15">
           <Image
-            src="/images/upload/cafe1.png"
+            src={formData.cafeImage || "https://placehold.co/200x200/png"}
             alt="Cafe Image"
             width={200}
             height={200}
@@ -43,11 +90,12 @@ export default function Overview() {
           />
           <div className="ml-10">
             <h2 className="text-(--dashboard-text) text-xl mb-2">
-              Kafe Enny Itje Sela putri megawati
+              {formData.namaUMKM}
             </h2>
             <span className="text-(--dashboard-text) text-sm">
               Updated{' '}
-              {new Timestamp(1731195416, 0)
+              
+              {formData.updatedAt && new Timestamp(formData.updatedAt.seconds, 0)
                 .toDate()
                 .toLocaleString('id-ID', {
                   day: 'numeric',

@@ -12,6 +12,7 @@ export default async function DashboardLayout({
   if (!user) {
     redirect('/login');
   }
+  
   return (
     <>
     <div className="flex min-h-screen max-w-screen bg-(--dashboard-bg)">
