@@ -99,7 +99,7 @@ export default function Configurations() {
           {loading ? (
             <p className="text-(--dashboard-text)">Loading menu...</p>
           ) : menuItems.length === 0 ? (
-            <p className="text-(--dashboard-text)">
+            <p className="text-(--dashboard-text) col-span-3">
               Belum ada menu. Silakan tambahkan menu baru.
             </p>
           ) : (
