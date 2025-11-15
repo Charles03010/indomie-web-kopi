@@ -18,7 +18,7 @@ export default function MenuDashboardCard({
   return (
     <Link href={link}>
       <div className="relative cursor-pointer flex-[0_0_80%] sm:flex-[0_0_60%] md:flex-[0_0_50%] min-w-0">
-        <div className="border bg-(--dashboard-card-bg) rounded-xl w-3/4 shadow-lg overflow-hidden">
+        <div className="border bg-(--dashboard-card-bg) rounded-xl w-full shadow-lg overflow-hidden">
           <div className="relative w-full aspect-video">
             <Image
               src={imageUrl}

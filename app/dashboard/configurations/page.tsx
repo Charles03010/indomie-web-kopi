@@ -70,7 +70,7 @@ export default function Configurations() {
 
     return () => unsub();
   }, [router]);
-  console.log(menuItems);
+
   return (
     <>
       <Link
@@ -95,7 +95,7 @@ export default function Configurations() {
             <Plus className="w-5 h-5" />
           </Link>
         </div>
-        <div className="grid grid-cols-3 gap-5 mt-5">
+        <div className="grid grid-cols-5 gap-5 mt-5">
           {loading ? (
             <p className="text-(--dashboard-text)">Loading menu...</p>
           ) : menuItems.length === 0 ? (
