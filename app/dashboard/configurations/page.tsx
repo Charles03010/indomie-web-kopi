@@ -91,9 +91,9 @@ export default function Configurations() {
       <section className="mt-10">
         <div className="text-(--dashboard-text) flex items-center">
           <h2 className="font-semibold text-2xl mr-3">Menu UMKM</h2>
-          <div className="p-2 bg-(--dashboard-card-bg) rounded-full cursor-pointer">
+          <Link href="/dashboard/configurations/menu/add" className="p-2 bg-(--dashboard-card-bg) rounded-full cursor-pointer">
             <Plus className="w-5 h-5" />
-          </div>
+          </Link>
         </div>
         <div className="grid grid-cols-3 gap-5 mt-5">
           {loading ? (
@@ -119,9 +119,9 @@ export default function Configurations() {
       <section className="my-10">
         <div className="text-(--dashboard-text) flex items-center">
           <h2 className="font-semibold text-2xl mr-3">Foto UMKM</h2>
-          <div className="p-2 bg-(--dashboard-card-bg) rounded-full cursor-pointer">
+          <Link href="/dashboard/configurations/foto/add" className="p-2 bg-(--dashboard-card-bg) rounded-full cursor-pointer">
             <Plus className="w-5 h-5" />
-          </div>
+          </Link>
         </div>
         <div className="grid grid-cols-3 gap-5 mt-5">
           {loading ? (
