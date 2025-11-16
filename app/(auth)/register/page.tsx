@@ -234,7 +234,7 @@ export default function Register() {
             ))}
             <div className="relative flex items-center justify-start cursor-pointer">
               <input type="radio" name="agree" id="agree" />
-              <span className="checkmark cursor-pointer mr-3"></span>
+              <span onClick={() => document.getElementById('agree')?.click()} className="checkmark cursor-pointer mr-3"></span>
               <label
                 htmlFor="agree"
                 className="w-full cursor-pointer text-(--head-text) font-light text-sm)"
