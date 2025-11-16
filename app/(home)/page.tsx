@@ -17,6 +17,7 @@ interface RecomendCardProps {
   address: string;
   distance: string;
   link: string;
+  rating: number; // Add rating to the interface
 }
 
 export default function Home() {
@@ -55,18 +56,42 @@ export default function Home() {
         const q = query(collection(db, 'umkm'));
         const snapshot = await getDocs(q);
 
-        const fetchedCards: RecomendCardProps[] = snapshot.docs.map((doc) => {
+        // Fetched cards must now be processed asynchronously
+        const fetchedCardsPromises = snapshot.docs.map(async (doc) => {
           const data = doc.data() as DocumentData;
+          const umkmId = doc.id;
+
+          // --- Fetch ulasan sub-collection for each cafe ---
+          const ulasanQuery = query(collection(db, 'umkm', umkmId, 'ulasan'));
+          const ulasanSnapshot = await getDocs(ulasanQuery);
+
+          let totalRating = 0;
+          const numReviews = ulasanSnapshot.size;
+
+          if (numReviews > 0) {
+            ulasanSnapshot.forEach((ulasanDoc) => {
+              totalRating += ulasanDoc.data().rating || 0;
+            });
+          }
+
+          const avgRating = numReviews > 0 ? totalRating / numReviews : 0;
+          const roundedRating = Math.ceil(avgRating); // Round up
+          // --- End of rating calculation ---
+
           return {
-            id: doc.id,
+            id: umkmId,
             title: data.nama || 'Nama Kafe',
             description: data.deskripsi || 'Deskripsi tidak tersedia.',
             imageUrl: data.imageUrl || 'https://placehold.co/300x200/png',
             address: data.alamat || 'Alamat tidak diisi',
             distance: data.distance || 'N/A',
-            link: `/cafe/${doc.id}`,
+            link: `/cafe/${umkmId}`,
+            rating: roundedRating, // Pass the calculated rating
           };
         });
+
+        // Wait for all promises to resolve
+        const fetchedCards = await Promise.all(fetchedCardsPromises);
 
         setRecommendations(fetchedCards);
       } catch (error) {
@@ -215,6 +240,7 @@ export default function Home() {
           </button>
 
           <div className="overflow-hidden w-full max-w-6xl" ref={emblaRef}>
+            {/* Update this section to map over the new state */}
             <div className="flex pl-4 md:pl-6 lg:pl-8">
               {loading ? (
                 <div className="flex-[0_0_100%] min-w-0 text-center text-(--head-text)">
@@ -227,13 +253,14 @@ export default function Home() {
               ) : (
                 recommendations.map((card) => (
                   <RecomendCard
-                    key={card.id}
+                    key={card.id} // Use the document ID as the key
                     title={card.title}
                     description={card.description}
                     imageUrl={card.imageUrl}
                     address={card.address}
                     distance={card.distance}
                     link={card.link}
+                    rating={card.rating} // Pass rating
                   />
                 ))
               )}
@@ -329,19 +356,19 @@ export default function Home() {
             <div
               className="
                 absolute top-full left-0 right-0 z-20 
-                mt-2 bg-linear-to-r to-[#1C2022] from-[#352B1B] 
+                mt-2 bg-white 
                 rounded-xl shadow-lg 
                 overflow-hidden border border-gray-200
               "
             >
-              <ul className="max-h-60 overflow-y-auto divide-gray-900 divide-y">
+              <ul className="max-h-60 overflow-y-auto">
                 {filteredResults.map((result) => (
                   <li key={result.id}>
                     <Link
                       href={result.link}
                       className="
                         block px-5 py-3 
-                        text-(--primary-white) hover:bg-gray-900 
+                        text-(--head-text) hover:bg-gray-100 
                         transition-colors text-lg
                         truncate
                       "
