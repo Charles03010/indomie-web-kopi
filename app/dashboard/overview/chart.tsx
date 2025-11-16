@@ -30,6 +30,10 @@ export default function CardLineChart() {
   );
 
   useEffect(() => {
+    // Helper function to generate 7 random numbers (for 7 labels)
+    const generateRandomData = () =>
+      Array.from({ length: 7 }, () => Math.floor(Math.random() * 200) + 10);
+
     var config = {
       type: 'line',
       data: {
@@ -47,10 +51,7 @@ export default function CardLineChart() {
             label: new Date().getFullYear(),
             backgroundColor: '#3182ce',
             borderColor: '#3182ce',
-            data: [
-              65, 5, 10, 25, 200, 150, 78, 66, 44, 56, 67, 100, 65, 5, 10, 25,
-              200, 150, 78, 66, 44, 56, 67, 100,
-            ],
+            data: generateRandomData(), // Use random data
             fill: false,
           },
           {
@@ -58,10 +59,7 @@ export default function CardLineChart() {
             fill: false,
             backgroundColor: '#edf2f7',
             borderColor: '#edf2f7',
-            data: [
-              40, 68, 86, 5, 10, 25, 200, 150, 74, 56, 60, 87, 40, 68, 86, 5,
-              10, 25, 200, 150, 74, 56, 60, 87,
-            ],
+            data: generateRandomData(), // Use random data
           },
         ],
       },
