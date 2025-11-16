@@ -1,13 +1,18 @@
 'use client';
 import { ChevronLeft, OctagonAlert } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef, useState, ChangeEvent } from 'react';
+import { useEffect, useRef, useState, ChangeEvent, FormEvent } from 'react';
 import {
   InputCafeDashboard,
   InputDashboard,
 } from '@/app/components/inputDashboard';
 import { auth, db } from '@/lib/firebase/client';
-import { onAuthStateChanged, User } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  User,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from 'firebase/auth';
 import {
   collection,
   getDocs,
@@ -20,6 +25,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { extractPublicIdFromUrl } from '@/lib/cloudinary/public_id';
+import { Button } from '@/app/components/button'; // Import Button for modal
 
 const inputData = [
   {
@@ -49,6 +55,13 @@ export default function Configurations() {
   });
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [umkmDocId, setUmkmDocId] = useState<string | null>(null);
+
+  // --- New state for modal ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [passwordForReauth, setPasswordForReauth] = useState('');
+  const [modalError, setModalError] = useState<string | null>(null);
+  // ---
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (!user) {
@@ -212,8 +225,12 @@ export default function Configurations() {
       }, 500);
     };
 
-  const handleDeleteUMKM = async (e: React.FormEvent) => {
+  // --- MODIFIED: This function now just opens the modal ---
+  const handleDeleteRequest = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setModalError(null);
+
     if (!currentUser) return;
 
     const inputHapus = (document.getElementById('hapus') as HTMLInputElement)
@@ -221,13 +238,37 @@ export default function Configurations() {
 
     // cek apakah nama sama
     if (inputHapus.trim() !== formData.namaUMKM.trim()) {
-      alert('Nama UMKM tidak sesuai. Penghapusan dibatalkan.');
+      setError('Nama UMKM tidak sesuai. Penghapusan dibatalkan.');
       return;
     }
 
-    try {
-      setSaving(true);
+    // Nama sesuai, buka modal re-autentikasi
+    setPasswordForReauth('');
+    setIsModalOpen(true);
+  };
 
+  // --- NEW: This function handles re-auth and actual deletion ---
+  const handleReauthAndConfirmDelete = async (
+    e: FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (!currentUser) {
+      setModalError('Sesi tidak valid. Silakan login ulang.');
+      return;
+    }
+
+    setSaving(true);
+    setModalError(null);
+
+    try {
+      // 1. Re-authenticate user
+      const credential = EmailAuthProvider.credential(
+        currentUser.email!,
+        passwordForReauth
+      );
+      await reauthenticateWithCredential(currentUser, credential);
+
+      // 2. Re-auth successful, proceed with deletion
       // --- HAPUS FOTO DI CLOUDINARY ---
       if (formData.cafeImage) {
         const publicId = extractPublicIdFromUrl(formData.cafeImage);
@@ -245,28 +286,28 @@ export default function Configurations() {
         await deleteDoc(doc(db, 'umkm', umkmDocId));
       }
 
-      // --- HAPUS DATA USER (COLLECTION users / umkmUser / dsb) ---
-      // Sesuaikan nama collection-nya (misal: "users")
+      // --- HAPUS DATA USER (COLLECTION users) ---
       await deleteDoc(doc(db, 'users', currentUser.uid));
 
-      alert('UMKM dan akun Anda berhasil dihapus.');
-      try {
-        await currentUser.delete();
-      } catch (authErr: any) {
-        // Jika token expired, harus re-authenticate dulu
-        if (authErr.code === 'auth/requires-recent-login') {
-          alert('Anda harus login ulang sebelum menghapus akun.');
-          return;
-        }
-        throw authErr;
-      }
+      // --- HAPUS AKUN AUTHENTICATION ---
+      await currentUser.delete();
 
-      // --- LOGOUT USER ---
+      alert('UMKM dan akun Anda berhasil dihapus.');
+      setIsModalOpen(false);
       await auth.signOut();
       window.location.href = '/';
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert('Gagal menghapus data.');
+      if (
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/invalid-credential'
+      ) {
+        setModalError('Password salah. Silakan coba lagi.');
+      } else {
+        setModalError(
+          'Gagal melakukan re-autentikasi. Silakan coba lagi nanti.'
+        );
+      }
     } finally {
       setSaving(false);
     }
@@ -291,16 +332,12 @@ export default function Configurations() {
         />
       </section>
       <section className="pb-10">
+        {/* Note: This form is now ONLY for the delete action */}
         <form
-          onSubmit={handleDeleteUMKM}
+          onSubmit={handleDeleteRequest}
           className="space-y-5 w-1/2 mt-10 text-(--dashboard-text)"
         >
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-              <OctagonAlert className="inline-block mr-2" />
-              {error}
-            </div>
-          )}
+          {/* This section is for the non-form inputs */}
           {inputData.map((input, index) => (
             <InputDashboard
               key={index}
@@ -315,6 +352,16 @@ export default function Configurations() {
             />
           ))}
           <br />
+
+          {/* General page error */}
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+              <OctagonAlert className="inline-block mr-2" />
+              {error}
+            </div>
+          )}
+
+          {/* Delete section */}
           <label className="font-extrabold" htmlFor="hapus">
             Hapus UMKM
           </label>
@@ -334,11 +381,62 @@ export default function Configurations() {
           <button
             type="submit"
             className="bg-red-600 cursor-pointer text-white px-8 py-2 rounded-xl"
+            disabled={saving}
           >
-            HAPUS
+            {saving ? 'Menghapus...' : 'HAPUS'}
           </button>
         </form>
       </section>
+
+      {/* --- NEW RE-AUTHENTICATION MODAL --- */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-(--dashboard-bg) p-8 rounded-xl shadow-2xl w-full max-w-md">
+            <h2 className="text-2xl font-bold text-(--dashboard-text) mb-4">
+              Konfirmasi Penghapusan Akun
+            </h2>
+            <p className="text-(--dashboard-text) mb-6">
+              Ini adalah tindakan permanen. Untuk keamanan, silakan masukkan
+              password Anda untuk melanjutkan.
+            </p>
+            <form onSubmit={handleReauthAndConfirmDelete}>
+              {modalError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+                  <OctagonAlert className="inline-block mr-2" />
+                  {modalError}
+                </div>
+              )}
+              <div className="text-(--dashboard-text) [&>*>*]:w-full">
+                <InputDashboard
+                  label="Password"
+                  type="password"
+                  name="passwordForReauth"
+                  placeholder="Masukkan password Anda"
+                  value={passwordForReauth}
+                  onChange={(e) => setPasswordForReauth(e.target.value)}
+                />
+              </div>
+              <div className="flex justify-end space-x-4 mt-8">
+                <button
+                  type="button"
+                  className="py-2 px-5 bg-gray-500 cursor-pointer rounded-xl text-white disabled:opacity-50"
+                  onClick={() => setIsModalOpen(false)}
+                  disabled={saving}
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="py-2 px-5 bg-red-600 cursor-pointer rounded-xl text-white disabled:opacity-50"
+                  disabled={saving}
+                >
+                  {saving ? 'Memverifikasi...' : 'Konfirmasi Hapus'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </>
   );
 }
