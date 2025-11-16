@@ -58,6 +58,7 @@ export default function Foto({
                     src={card.imageUrl}
                     alt={card.alt}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="rounded-xl shadow-xl object-cover"
                   />
                 </div>

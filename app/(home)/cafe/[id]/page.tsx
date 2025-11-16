@@ -84,6 +84,7 @@ export default async function Cafe({ params }: { params: { id: string } }) {
             className="rounded-xl"
             alt={mainImageAlt}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
             priority // Prioritize loading the main image
           />
