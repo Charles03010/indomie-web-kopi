@@ -357,7 +357,7 @@ export default function Home() {
               <span className="block">BERSAMA UMKMin</span>
             </h2>
             <Link
-              href="#search"
+              href="/login"
               className="
                 inline-block 
                 px-8 py-3 

@@ -1,16 +1,16 @@
-'use client'; 
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Menu, X, User as UserIcon } from 'lucide-react'; 
-import { useState, useEffect } from 'react'; 
+import { Menu, X, User as UserIcon } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '@/lib/firebase/client';
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -19,7 +19,7 @@ const Navbar = () => {
     return () => unsubscribe();
   }, []);
 
-  const toggleMenu = () => { 
+  const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
@@ -41,28 +41,47 @@ const Navbar = () => {
   `;
 
   return (
-    <header className="
+    <header
+      className="
       w-11/12 md:w-3/4 
       z-20 sticky top-4 md:top-10 mx-auto 
       rounded-full flex items-center justify-between 
       px-4 py-2 md:px-8 md:py-3 
       bg-linear-to-r to-[#1C2022] from-[#352B1B] 
       shadow-xl  
-    ">
-      <Image src="/images/logo.png" className='ml-2 md:ml-4' alt="Logo" width={40} height={40} />
-      
+    "
+    >
+      <Link href="/">
+        <Image
+          src="/images/logo.png"
+          className="ml-2 md:ml-4"
+          alt="Logo"
+          width={40}
+          height={40}
+        />
+      </Link>
+
       <nav className="hidden md:flex items-center space-x-6">
-        <Link href="#recomend" className="text-(--primary-white) hover:text-gray-300 transition-colors">
+        <Link
+          href="/#recomend"
+          className="text-(--primary-white) hover:text-gray-300 transition-colors"
+        >
           Rekomendasi
         </Link>
-        <Link href="#search" className="text-(--primary-white) hover:text-gray-300 transition-colors">
+        <Link
+          href="/#search"
+          className="text-(--primary-white) hover:text-gray-300 transition-colors"
+        >
           Cari
         </Link>
-        <Link href="#join" className="text-(--primary-white) hover:text-gray-300 transition-colors">
+        <Link
+          href="/#join"
+          className="text-(--primary-white) hover:text-gray-300 transition-colors"
+        >
           Gabung UMKM
         </Link>
       </nav>
-      
+
       <div className="hidden md:flex items-center relative">
         {user ? (
           <div className="relative">
@@ -70,7 +89,8 @@ const Navbar = () => {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="w-10 h-10 cursor-pointer rounded-full bg-gray-600 flex items-center justify-center text-white hover:bg-gray-500 transition-colors"
             >
-              <UserIcon />              {user.photoURL ? (
+              <UserIcon />{' '}
+              {user.photoURL ? (
                 <img
                   src={user.photoURL}
                   alt="Profile"
@@ -79,25 +99,33 @@ const Navbar = () => {
               ) : (
                 <UserIcon />
               )}
-
             </button>
             {isProfileOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
-                <Link href="/dashboard/overview" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link
+                  href="/dashboard/overview"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
                   Dashboard
                 </Link>
-                <Link href="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
                   Profile Settings
                 </Link>
-                <Link href="/logout" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                <Link
+                  href="/logout"
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
                   Logout
                 </Link>
               </div>
             )}
           </div>
         ) : (
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="
               text-(--primary-white) 
               mx-4 
@@ -112,58 +140,67 @@ const Navbar = () => {
           </Link>
         )}
       </div>
-      <button 
-        className="md:hidden text-(--primary-white) p-2 z-30" 
-        onClick={toggleMenu} 
+      <button
+        className="md:hidden text-(--primary-white) p-2 z-30"
+        onClick={toggleMenu}
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />} 
+        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
       </button>
 
-      <nav 
-        id="mobile-menu"
-        className={mobileMenuClasses} 
-      >
-        <Link 
-          href="#recomend" 
+      <nav id="mobile-menu" className={mobileMenuClasses}>
+        <Link
+          href="/#recomend"
           className="text-(--primary-white) hover:text-gray-200 transition-colors"
-          onClick={() => setIsOpen(false)} 
+          onClick={() => setIsOpen(false)}
         >
           Rekomendasi
         </Link>
-        <Link 
-          href="#search" 
+        <Link
+          href="/#search"
           className="text-(--primary-white) hover:text-gray-200 transition-colors"
           onClick={() => setIsOpen(false)}
         >
           Cari
         </Link>
-        <Link 
-          href="#join" 
+        <Link
+          href="/#join"
           className="text-(--primary-white) hover:text-gray-200 transition-colors"
           onClick={() => setIsOpen(false)}
         >
           Gabung UMKM
         </Link>
-        
+
         <hr className="border-gray-500 opacity-50" />
-        
+
         {user ? (
           <>
-            <Link href="/dashboard/overview" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+            <Link
+              href="/dashboard/overview"
+              className="text-(--primary-white) hover:text-gray-200"
+              onClick={() => setIsOpen(false)}
+            >
               Dashboard
             </Link>
-            <Link href="/settings" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+            <Link
+              href="/settings"
+              className="text-(--primary-white) hover:text-gray-200"
+              onClick={() => setIsOpen(false)}
+            >
               Profile Settings
             </Link>
-            <Link href="/logout" className="text-(--primary-white) hover:text-gray-200" onClick={() => setIsOpen(false)}>
+            <Link
+              href="/logout"
+              className="text-(--primary-white) hover:text-gray-200"
+              onClick={() => setIsOpen(false)}
+            >
               Logout
             </Link>
           </>
         ) : (
-          <Link 
-            href="/login" 
+          <Link
+            href="/login"
             className="
               text-(--button-secondary) 
               font-bold 

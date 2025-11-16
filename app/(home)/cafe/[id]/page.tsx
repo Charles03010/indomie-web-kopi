@@ -48,13 +48,13 @@ export default async function Cafe({ params }: { params: { id: string } }) {
   const menuData = menuItems.map((item) => ({
     title: item.nama || 'Menu Item',
     description: item.deskripsi || 'Deskripsi tidak tersedia.',
-    imageUrl: item.imageUrl || 'https://placehold.co/300x200',
+    imageUrl: item.imageUrl || 'https://placehold.co/300x200/png',
     rating: item.rating || 0, // Assuming rating might not exist
     price: item.harga || 0,
   }));
 
   const fotoData = fotoItems.map((item) => ({
-    imageUrl: item.imageUrl || 'https://placehold.co/400x300',
+    imageUrl: item.imageUrl || 'https://placehold.co/400x300/png',
     alt: item.alt || 'Foto Kafe',
   }));
 
@@ -62,7 +62,7 @@ export default async function Cafe({ params }: { params: { id: string } }) {
     user: item.user || 'Pengguna',
     comment: item.comment || 'Tidak ada komentar.',
     rating: item.rating || 0,
-    profilepic: item.profilepic || 'https://placehold.co/100x100',
+    profilepic: item.profilepic || 'https://placehold.co/100x100/png',
   }));
   // --- End Firestore Data Fetching ---
 
@@ -71,7 +71,7 @@ export default async function Cafe({ params }: { params: { id: string } }) {
     umkmData.imageUrl ||
     (fotoData.length > 0
       ? fotoData[0].imageUrl
-      : 'https://placehold.co/1200x400');
+      : 'https://placehold.co/1200x400/png');
   const mainImageAlt = umkmData.nama || 'Gambar Kafe';
 
   return (
