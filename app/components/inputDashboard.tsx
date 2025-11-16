@@ -1,5 +1,6 @@
 'use client';
 import { Camera, Eye, EyeOff, SquareUserRound } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export const InputDashboard = ({
@@ -90,9 +91,11 @@ export const InputDashboard = ({
               className="hidden"
             />
             {preview ? (
-              <img
+              <Image
                 src={preview}
                 alt="Profile Preview"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                fill
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -148,9 +151,12 @@ export const InputCafeDashboard = ({ name, url, onChange }: { name: string; url:
         }}
       />
       {preview || url ? (
-        <img
+        <Image
           src={preview || url}
           alt="Profile Preview"
+          fill
+          objectFit="cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="w-full h-full object-cover"
         />
       ) : (

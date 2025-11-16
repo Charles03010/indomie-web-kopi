@@ -33,7 +33,7 @@ export default function Configurations() {
       try {
         const q = query(
           collection(db, 'umkm'),
-          where('idpemilik', '==', currentUser.uid)
+          where('idpemilik', '==', user!.uid)
         );
         const umkmSnapshot = await getDocs(q);
 
@@ -69,7 +69,7 @@ export default function Configurations() {
     });
 
     return () => unsub();
-  }, [router]);
+  }, [router, user]);
 
   return (
     <>

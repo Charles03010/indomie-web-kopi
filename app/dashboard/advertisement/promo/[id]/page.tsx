@@ -2,7 +2,7 @@
 
 import { ChevronLeft, OctagonAlert } from 'lucide-react';
 import Link from 'next/link';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { auth, db } from '@/lib/firebase/client';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import {
@@ -20,10 +20,8 @@ import {
 } from 'firebase/firestore';
 import { useRouter, useParams } from 'next/navigation';
 import {
-  InputCafeDashboard,
   InputDashboard,
 } from '@/app/components/inputDashboard';
-import { extractPublicIdFromUrl } from '@/lib/cloudinary/public_id';
 
 export default function PromoForm() {
   const { id } = useParams(); // 'add' or 'foto-item-id'

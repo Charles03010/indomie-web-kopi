@@ -1,5 +1,6 @@
 'use client';
 import { Camera, Eye, EyeOff, SquareUserRound } from 'lucide-react';
+import Image from 'next/image';
 import { useState } from 'react';
 
 export const Input = ({
@@ -90,9 +91,11 @@ export const Input = ({
               className="hidden"
             />
             {preview ? (
-              <img
+              <Image
                 src={preview}
                 alt="Profile Preview"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -148,8 +151,9 @@ export const InputProfile = ({ name, url, onChange }: { name: string; url: strin
         }}
       />
       {preview || url ? (
-        <img
+        <Image
           src={preview || url}
+          fill
           alt="Profile Preview"
           className="w-full h-full object-cover"
         />

@@ -32,7 +32,7 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -40,7 +40,7 @@ export default function Login() {
     }));
   };
 
-  const handleSignIn = async (e: any) => {
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -64,13 +64,14 @@ export default function Login() {
       }
 
       router.push('/dashboard/overview');
-    } catch (err: any) {
-      console.error('Error signing in:', err.code, err.message);
+    } catch (err: unknown) {
+      const error = err as { code?: string; message?: string };
+      console.error('Error signing in:', error.code, error.message);
 
       if (
-        err.code === 'auth/invalid-credential' ||
-        err.code === 'auth/wrong-password' ||
-        err.code === 'auth/user-not-found'
+        error.code === 'auth/invalid-credential' ||
+        error.code === 'auth/wrong-password' ||
+        error.code === 'auth/user-not-found'
       ) {
         setError('Email atau password salah. Silakan coba lagi.');
       } else {

@@ -32,6 +32,6 @@ export async function POST(req: Request) {
 
     return res;
   } catch (error) {
-    return NextResponse.json({ valid: false }, { status: 401 });
+    return NextResponse.json({ valid: false }, { status: 401, statusText: String(error) });
   }
 }

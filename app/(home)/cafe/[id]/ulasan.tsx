@@ -2,7 +2,6 @@
 import UlasanCard from '@/app/components/card/ulasanCard';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback } from 'react';
 import { User } from 'firebase/auth';

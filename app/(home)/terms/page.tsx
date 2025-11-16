@@ -12,9 +12,9 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-2xl font-bold">1. Pendahuluan</h2>
             <p className="font-light leading-relaxed">
-              Selamat datang di UMKMin. Syarat dan Ketentuan ("Ketentuan") ini
+              Selamat datang di UMKMin. Syarat dan Ketentuan (&quot;Ketentuan&quot;) ini
               mengatur penggunaan Anda atas platform, situs web, dan layanan
-              kami ("Layanan"). Dengan mengakses atau menggunakan Layanan kami,
+              kami (&quot;Layanan&quot;). Dengan mengakses atau menggunakan Layanan kami,
               Anda setuju untuk terikat oleh Ketentuan ini. Jika Anda tidak setuju
               dengan Ketentuan ini, Anda tidak boleh menggunakan Layanan kami.
             </p>
@@ -25,8 +25,8 @@ export default function TermsPage() {
             <p className="font-light leading-relaxed">
               Anda setuju untuk menggunakan Layanan hanya untuk tujuan yang sah
               dan sesuai dengan Ketentuan ini. Anda bertanggung jawab penuh atas
-              semua konten yang Anda unggah, kirim, atau tampilkan ("Konten
-              Pengguna") di platform kami.
+              semua konten yang Anda unggah, kirim, atau tampilkan (&quot;Konten
+              Pengguna&quot;) di platform kami.
             </p>
             <ul className="list-disc list-inside font-light pl-4 space-y-1">
               <li>
@@ -69,7 +69,7 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-2xl font-bold">5. Pembatasan Tanggung Jawab</h2>
             <p className="font-light leading-relaxed">
-              Layanan UMKMin disediakan "sebagaimana adanya". Kami tidak membuat
+              Layanan UMKMin disediakan &quot;sebagaimana adanya&quot;. Kami tidak membuat
               jaminan apa pun terkait keakuratan, kelengkapan, atau keandalan
               konten yang disediakan oleh pengguna (UMKM atau pelanggan). UMKMin
               tidak bertanggung jawab atas kerugian atau kerusakan apa pun yang

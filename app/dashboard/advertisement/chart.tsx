@@ -34,7 +34,7 @@ export default function CardLineChart() {
     const generateRandomData = () =>
       Array.from({ length: 7 }, () => Math.floor(Math.random() * 200) + 10);
 
-    var config = {
+    const config = {
       type: 'line',
       data: {
         labels: [

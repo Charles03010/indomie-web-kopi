@@ -91,9 +91,11 @@ const Navbar = () => {
             >
               <UserIcon />{' '}
               {user.photoURL ? (
-                <img
+                <Image
                   src={user.photoURL}
                   alt="Profile"
+                  width={40}
+                  height={40}
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (

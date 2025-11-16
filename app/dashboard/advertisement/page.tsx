@@ -25,7 +25,7 @@ export default function Advertisement() {
       try {
         const q = query(
           collection(db, 'umkm'),
-          where('idpemilik', '==', currentUser.uid)
+          where('idpemilik', '==', user!.uid)
         );
         const umkmSnapshot = await getDocs(q);
 
@@ -53,7 +53,7 @@ export default function Advertisement() {
     });
 
     return () => unsub();
-  }, [router]);
+  }, [router, user]);
   return (
     <>
       <Link

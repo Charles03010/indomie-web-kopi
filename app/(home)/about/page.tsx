@@ -1,5 +1,3 @@
-// app/(home)/about/page.tsx
-import Image from 'next/image';
 import Link from 'next/link';
 
 export default function AboutPage() {
@@ -24,8 +22,8 @@ export default function AboutPage() {
               Di UMKMin, kami percaya bahwa setiap cangkir kopi memiliki cerita.
               Misi kami adalah untuk menjadi jembatan antara para penikmat kopi
               dengan Usaha Mikro, Kecil, dan Menengah (UMKM) kopi lokal yang
-              luar biasa di seluruh Indonesia. Kami ingin "Jelajahi Dunia Mu
-              dalam Secangkir Kopi" bukan hanya slogan, tapi sebuah pengalaman
+              luar biasa di seluruh Indonesia. Kami ingin &quot;Jelajahi Dunia Mu
+              dalam Secangkir Kopi&quot; bukan hanya slogan, tapi sebuah pengalaman
               yang nyata.
             </p>
             <p className="font-light leading-relaxed text-lg">

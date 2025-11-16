@@ -188,7 +188,7 @@ export default function Settings() {
 
       // 1. Kalau ada foto baru → upload ke Cloudinary
       let finalPhotoURL = form.photoURL;
-      let uploadedPublicId: string | null = null;
+
       const oldPhotoPublicId = form.photoPublicId;
 
       if (form.profilePicture && form.profilePicture.size > 0) {
@@ -207,7 +207,7 @@ export default function Settings() {
 
         const uploadData = await uploadRes.json();
         finalPhotoURL = uploadData.url as string;
-        uploadedPublicId = uploadData.public_id as string;
+
         if (oldPhotoPublicId) {
           try {
             await fetch('/api/delete-photo', {
@@ -216,16 +216,11 @@ export default function Settings() {
               body: JSON.stringify({ publicId: oldPhotoPublicId }),
             });
           } catch (delErr) {
-            console.error(
-              '[Settings] gagal hapus foto lama:',
-              delErr
-            );
+            console.error('[Settings] gagal hapus foto lama:', delErr);
             // tidak menggagalkan update utama, hanya log
           }
         }
       }
-
-      
 
       // 2. Update Firebase Auth: displayName, photoURL, email, password
       const profileUpdates: { displayName?: string; photoURL?: string } = {};
@@ -299,6 +294,13 @@ export default function Settings() {
     return (
       <div className="flex items-center justify-center min-h-dvh text-(--head-text)">
         Loading account settings...
+      </div>
+    );
+  }
+  if (saving) {
+    return (
+      <div className="flex items-center justify-center min-h-dvh text-(--head-text)">
+        Saving changes...
       </div>
     );
   }

@@ -57,7 +57,7 @@ const Sidebar = () => {
     });
 
     return () => unsub();
-  }, []);
+  }, [router, pathname]);
   return (
     <aside className="w-90 sticky top-0 border-r px-5 py-10 max-h-screen border-(--dashboard-border)">
       <div className="flex items-center justify-start">

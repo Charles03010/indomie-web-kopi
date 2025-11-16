@@ -25,7 +25,6 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { extractPublicIdFromUrl } from '@/lib/cloudinary/public_id';
-import { Button } from '@/app/components/button'; // Import Button for modal
 
 const inputData = [
   {
@@ -366,7 +365,7 @@ export default function Configurations() {
             Hapus UMKM
           </label>
           <p>
-            Ketik "{formData.namaUMKM}" sebagai konfirmasi menghapus akun anda
+            Ketik &quot;{formData.namaUMKM}&quot; sebagai konfirmasi menghapus akun anda
           </p>
           <div className="flex bg-(--dashboard-card-bg) mt-2 w-1/2 rounded-xl items-center">
             <input

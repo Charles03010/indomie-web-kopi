@@ -14,10 +14,8 @@ import {
   collection,
   getDocs,
   query,
-  where,
   addDoc,
   serverTimestamp,
-  DocumentData,
   Timestamp,
 } from 'firebase/firestore';
 import { Star, X, OctagonAlert } from 'lucide-react';

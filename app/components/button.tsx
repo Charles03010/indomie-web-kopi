@@ -1,6 +1,4 @@
 'use client';
-import { Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
 
 export const Button = ({
   type,
