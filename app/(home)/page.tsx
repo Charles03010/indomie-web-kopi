@@ -3,16 +3,11 @@ import useEmblaCarousel from 'embla-carousel-react';
 import { ArrowLeft, ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import RecomendCard from '../components/card/recomendCard';
 
 import { db } from '@/lib/firebase/client';
-import {
-  collection,
-  getDocs,
-  query,
-  DocumentData,
-} from 'firebase/firestore';
+import { collection, getDocs, query, DocumentData } from 'firebase/firestore';
 
 interface RecomendCardProps {
   id: string;
@@ -23,7 +18,6 @@ interface RecomendCardProps {
   distance: string;
   link: string;
 }
-
 
 export default function Home() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -37,6 +31,15 @@ export default function Home() {
   );
   const [loading, setLoading] = useState(true);
 
+  // --- New state for search ---
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredResults, setFilteredResults] = useState<RecomendCardProps[]>(
+    []
+  );
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  // --- End new state ---
+
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
   }, [emblaApi]);
@@ -45,6 +48,7 @@ export default function Home() {
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
+  // Effect to fetch UMKM data (existing)
   useEffect(() => {
     const fetchUmkmData = async () => {
       try {
@@ -57,10 +61,10 @@ export default function Home() {
             id: doc.id,
             title: data.nama || 'Nama Kafe',
             description: data.deskripsi || 'Deskripsi tidak tersedia.',
-            imageUrl: data.imageUrl || 'https://placehold.co/300x200/png', // Fallback image
-            address: data.alamat || 'Alamat tidak diisi', // Assuming an 'alamat' field
-            distance: data.distance || 'N/A', // Assuming a 'distance' field
-            link: `/cafe/${doc.id}`, // Use the document ID for the link
+            imageUrl: data.imageUrl || 'https://placehold.co/300x200/png',
+            address: data.alamat || 'Alamat tidak diisi',
+            distance: data.distance || 'N/A',
+            link: `/cafe/${doc.id}`,
           };
         });
 
@@ -74,6 +78,38 @@ export default function Home() {
 
     fetchUmkmData();
   }, []);
+
+  // --- New effect for filtering results ---
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredResults([]);
+      setIsDropdownVisible(false);
+      return;
+    }
+
+    const filtered = recommendations.filter((rec) =>
+      rec.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredResults(filtered);
+    setIsDropdownVisible(filtered.length > 0);
+  }, [searchTerm, recommendations]);
+
+  // --- New effect to handle "click outside" ---
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        searchContainerRef.current &&
+        !searchContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownVisible(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchContainerRef]);
 
   return (
     <>
@@ -179,7 +215,6 @@ export default function Home() {
           </button>
 
           <div className="overflow-hidden w-full max-w-6xl" ref={emblaRef}>
-            {/* Update this section to map over the new state */}
             <div className="flex pl-4 md:pl-6 lg:pl-8">
               {loading ? (
                 <div className="flex-[0_0_100%] min-w-0 text-center text-(--head-text)">
@@ -192,7 +227,7 @@ export default function Home() {
               ) : (
                 recommendations.map((card) => (
                   <RecomendCard
-                    key={card.id} // Use the document ID as the key
+                    key={card.id}
                     title={card.title}
                     description={card.description}
                     imageUrl={card.imageUrl}
@@ -237,6 +272,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* --- MODIFIED SEARCH SECTION --- */}
       <section id="search" className="py-16 md:py-20 px-4 md:px-10 lg:px-14">
         <div className="text-center text-(--head-text) max-w-4xl mx-auto">
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold xl:w-max">
@@ -246,42 +282,92 @@ export default function Home() {
             gas, langsung cari lokasi favorit kamu.
           </h3>
         </div>
-        <form
-          action=""
-          className="
-            w-full md:w-3/4 lg:w-2/3 xl:w-1/2 
-            my-10 py-3 md:py-4 mx-auto 
-            rounded-full flex items-center 
-            justify-between 
-            px-4 md:px-8 
-            bg-linear-to-r to-[#1C2022] from-[#352B1B] 
-            shadow-xl
-          "
+
+        {/* This wrapper is now relative and has the ref */}
+        <div
+          ref={searchContainerRef}
+          className="relative w-full md:w-3/4 lg:w-2/3 xl:w-1/2 my-10 mx-auto"
         >
-          <input
+          <form
+            onSubmit={(e) => e.preventDefault()} // Prevent form submission
             className="
-              w-full 
-              outline-none border-none 
-              text-(--primary-white) 
-              font-light text-base md:text-lg 
-              bg-transparent 
-              placeholder-gray-400
+              w-full py-3 md:py-4 
+              rounded-full flex items-center 
+              justify-between 
+              px-4 md:px-8 
+              bg-linear-to-r to-[#1C2022] from-[#352B1B] 
+              shadow-xl
             "
-            placeholder="enaknya ngopi dimana ya?"
-            type="text"
-          />
-          <button type="submit" className="text-(--primary-white) ml-4 p-2">
-            <Search strokeWidth={1.5} className="w-6 h-6" />
-          </button>
-        </form>
+          >
+            <input
+              className="
+                w-full 
+                outline-none border-none 
+                text-(--primary-white) 
+                font-light text-base md:text-lg 
+                bg-transparent 
+                placeholder-gray-400
+              "
+              placeholder="enaknya ngopi dimana ya?"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() =>
+                setIsDropdownVisible(
+                  filteredResults.length > 0 && searchTerm.length > 0
+                )
+              }
+              autoComplete="off"
+            />
+            <button type="submit" className="text-(--primary-white) ml-4 p-2">
+              <Search strokeWidth={1.5} className="w-6 h-6" />
+            </button>
+          </form>
+
+          {/* --- NEW DROPDOWN UI --- */}
+          {isDropdownVisible && (
+            <div
+              className="
+                absolute top-full left-0 right-0 z-20 
+                mt-2 bg-linear-to-r to-[#1C2022] from-[#352B1B] 
+                rounded-xl shadow-lg 
+                overflow-hidden border border-gray-200
+              "
+            >
+              <ul className="max-h-60 overflow-y-auto divide-gray-900 divide-y">
+                {filteredResults.map((result) => (
+                  <li key={result.id}>
+                    <Link
+                      href={result.link}
+                      className="
+                        block px-5 py-3 
+                        text-(--primary-white) hover:bg-gray-900 
+                        transition-colors text-lg
+                        truncate
+                      "
+                      onClick={() => {
+                        setSearchTerm(result.title); // Fill input on click
+                        setIsDropdownVisible(false); // Hide dropdown
+                      }}
+                    >
+                      {result.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {/* --- END NEW DROPDOWN UI --- */}
+        </div>
       </section>
+      {/* --- END MODIFIED SEARCH SECTION --- */}
 
       <section
         id="join"
         className="
         relative 
-        flex flex-col // Container vertikal untuk Judul dan Konten Utama
-        items-center justify-start // Judul di atas, Konten Utama di bawah
+        flex flex-col
+        items-center justify-start 
         min-h-[70vh] lg:min-h-[80vh]
         py-12 md:py-20 
         px-4 md:px-10 lg:px-14 
@@ -306,8 +392,8 @@ export default function Home() {
         <div
           className="
           w-full max-w-7xl 
-          flex flex-col lg:flex-row // Vertikal di mobile, Horizontal di desktop
-          items-center lg:items-center // Pusatkan secara vertikal
+          flex flex-col lg:flex-row 
+          items-center lg:items-center
           justify-center 
           gap-8 lg:gap-16
         "
@@ -316,7 +402,7 @@ export default function Home() {
             className="
             relative 
             w-full lg:w-1/2 
-            aspect-square max-w-xs sm:max-w-sm lg:max-w-none // Kontrol ukuran gambar agar tidak terlalu besar di mobile
+            aspect-square max-w-xs sm:max-w-sm lg:max-w-none 
             flex justify-center lg:justify-start 
           "
           >
