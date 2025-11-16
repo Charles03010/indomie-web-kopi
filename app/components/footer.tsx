@@ -16,7 +16,7 @@ const Footer = () => {
         <div className="flex mr-10 text-(--head-text) text-lg items-center justify-between w-1/4 font-medium">
           <Link href="/faq">FAQ</Link>
           <Link href="/terms">Terms and regulations</Link>
-          <Link href="/#about">About</Link>
+          <Link href="/about">About</Link>
         </div>
       </div>
       <hr className="my-4 border-(--divider-primary)" />
